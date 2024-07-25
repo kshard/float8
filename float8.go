@@ -36,10 +36,10 @@ const (
 	// scaled to represent a fractional value between [1, 2). The bias normalize value.
 	//
 	// 2^|mantissa|
-	mantissaBias = 8.0
+	// mantissaBias = 8.0
 
 	// exponent base
-	base = 2
+	// base = 2
 
 	//
 	float32Bias = 127
