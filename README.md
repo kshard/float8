@@ -1,5 +1,4 @@
 <p align="center">
-  <img src="./doc/hnsw.svg" height="240" />
   <h3 align="center">Float8</h3>
   <p align="center"><strong>minifloat in Golang</strong></p>
 
