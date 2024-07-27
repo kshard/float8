@@ -54,7 +54,7 @@ package float8
 // The code book for translating float8 to float32
 //
 
-var f8tof32 = []float32{%s}
+var f8tof32 = [0x100]float32{%s}
 	`
 
 	_, err = fd.WriteString(fmt.Sprintf(tpl, strings.Join(seq, ",")))
@@ -86,7 +86,7 @@ package float8
 // The code book for translating float8 to float32
 //
 
-var %s = []uint8{%s}
+var %s = [0x10000]uint8{%s}
 	`
 
 	_, err = fd.WriteString(fmt.Sprintf(tpl, name, strings.Join(seq, ",")))
