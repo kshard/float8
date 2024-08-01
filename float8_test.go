@@ -15,6 +15,23 @@ import (
 	"github.com/kshard/float8/internal/math8"
 )
 
+func TestToFloat8(t *testing.T) {
+	for expected, f32 := range f8tof32 {
+		// Note: It would be expected that ToFloat8(ToFloat32(x)) = x
+		//       but due to noticeable error, it is not a case on small numbers
+		//       small epsilon makes number to be approximate
+		e := float32(1e-6)
+		if f32 < 0 {
+			e = -1e-6
+		}
+
+		val := ToFloat8(f32 + e)
+		if val != uint8(expected) {
+			t.Errorf("0x%02x got=0x%02x f32=%f", expected, val, f32)
+		}
+	}
+}
+
 func TestToFloat32(t *testing.T) {
 	for a := 0; a < 0x100; a++ {
 		c := ToFloat32(uint8(a))
@@ -74,8 +91,10 @@ func TestDiv(t *testing.T) {
 }
 
 var (
-	f8  uint8
-	f32 float32
+	f8   uint8
+	f32  float32
+	f32s = f8tof32[:]
+	f8s  []uint8
 )
 
 func BenchmarkToFloat8(b *testing.B) {
@@ -101,5 +120,11 @@ func BenchmarkMul(b *testing.B) {
 	for i := b.N; i > 0; i-- {
 		v := uint8(i % 0x100)
 		f8 = Mul(v, v)
+	}
+}
+
+func BenchmarkToSlice8(b *testing.B) {
+	for i := b.N; i > 0; i-- {
+		f8s = ToSlice8(f32s)
 	}
 }

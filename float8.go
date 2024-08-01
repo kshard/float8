@@ -86,6 +86,24 @@ func ToFloat8(f32 float32) Float8 {
 	return (sign << 7) | (uint8(exponent) << 3) | uint8(mantissa)
 }
 
+// Convert []float32 to []float8
+// Note: the function is faster than standard range over []float32
+func ToSlice8(f32s []float32) (f8s []Float8) {
+	if len(f32s)%4 != 0 {
+		panic("slice length must be multiple of 4")
+	}
+
+	f8s = make([]uint8, len(f32s))
+	for i := 0; i < len(f32s); i += 4 {
+		a := f32s[i : i+4 : i+4]
+		b := f8s[i : i+4 : i+4]
+
+		b[0], b[1], b[2], b[3] = ToFloat8(a[0]), ToFloat8(a[1]), ToFloat8(a[2]), ToFloat8(a[3])
+	}
+
+	return
+}
+
 // Convert float8 to float32
 func ToFloat32(f8 Float8) float32 { return f8tof32[f8] }
 
