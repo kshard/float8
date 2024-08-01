@@ -80,11 +80,10 @@ The library implement public api using code books so that its pure Go code is ef
 ```
 go test -run=^$ -bench=. -benchtime=1s -cpu 1
 BenchmarkToFloat8     546344320         1.9410 ns/op
-BenchmarkToFloat32   1000000000         0.5903 ns/op
-BenchmarkAdd         1000000000         0.6267 ns/op
-BenchmarkMul         1000000000         0.6284 ns/op
-BenchmarkAddFloat32  1000000000         0.2874 ns/op
-BenchmarkMulFloat32  1000000000         0.2872 ns/op
+BenchmarkToFloat32   1000000000         0.5158 ns/op
+BenchmarkAdd         1000000000         0.5804 ns/op
+BenchmarkMul         1000000000         0.6461 ns/op
+BenchmarkToSlice8       3481468         348.70 ns/op
 ```
 
 The internal package `math8` implements float-point algebra with focus on correctness, which is used to build code books.

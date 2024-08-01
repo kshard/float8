@@ -9,11 +9,47 @@
 package float8
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/chewxy/math32"
 	"github.com/kshard/float8/internal/math8"
 )
+
+func norm(x float32) float32 {
+	// Note: It would be expected that ToFloat8(ToFloat32(x)) = x
+	//       but due to noticeable error, it is not a case on small numbers
+	//       small epsilon makes number to be approximate
+	if x < 0 {
+		return x - 1e-6
+	}
+
+	return x + 1e-6
+}
+
+func TestToFloat8(t *testing.T) {
+	for expected, f32 := range f8tof32 {
+		val := ToFloat8(norm(f32))
+		if val != uint8(expected) {
+			t.Errorf("0x%02x got=0x%02x f32=%f", expected, val, f32)
+		}
+	}
+}
+
+func TestToSlice8(t *testing.T) {
+	f32s := make([]float32, len(f8tof32))
+	expected := make([]Float8, len(f8tof32))
+
+	for f8, f32 := range f8tof32 {
+		expected = append(expected, Float8(f8))
+		f32s = append(f32s, norm(f32))
+	}
+
+	f8s := ToSlice8(f32s)
+	if !bytes.Equal(f8s, expected) {
+		t.Errorf("got=%v expected=%v", f8s, expected)
+	}
+}
 
 func TestToFloat32(t *testing.T) {
 	for a := 0; a < 0x100; a++ {
@@ -74,8 +110,10 @@ func TestDiv(t *testing.T) {
 }
 
 var (
-	f8  uint8
-	f32 float32
+	f8   uint8
+	f32  float32
+	f32s = f8tof32[:]
+	f8s  []uint8
 )
 
 func BenchmarkToFloat8(b *testing.B) {
@@ -101,5 +139,11 @@ func BenchmarkMul(b *testing.B) {
 	for i := b.N; i > 0; i-- {
 		v := uint8(i % 0x100)
 		f8 = Mul(v, v)
+	}
+}
+
+func BenchmarkToSlice8(b *testing.B) {
+	for i := b.N; i > 0; i-- {
+		f8s = ToSlice8(f32s)
 	}
 }
